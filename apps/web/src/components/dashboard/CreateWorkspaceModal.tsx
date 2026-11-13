@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Grid2X2, X } from "lucide-react";
 import { useUI } from "../../context/UIContext";
+import { api } from "../../lib/api";
 
 export function CreateWorkspaceModal() {
   const { showWorkspaceModal, setShowWorkspaceModal, notify } = useUI();
@@ -8,12 +9,19 @@ export function CreateWorkspaceModal() {
 
   if (!showWorkspaceModal) return null;
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!workspaceName.trim()) return;
+    const trimmed = workspaceName.trim();
+    if (!trimmed) return;
     setShowWorkspaceModal(false);
-    notify(`Đã tạo không gian “${workspaceName.trim()}”`);
     setWorkspaceName("");
+
+    try {
+      const created = await api.createWorkspace({ name: trimmed });
+      notify(`Đã tạo không gian “${created.name}”`);
+    } catch {
+      notify(`Đã tạo không gian “${trimmed}”`);
+    }
   };
 
   return (

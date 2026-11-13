@@ -1,2 +1,3 @@
-// Database schema placeholder for Phase 0
-export const DB_VERSION = "0.1.0";
+export * from "./schema.js";
+export * from "./client.js";
+export * from "./seed.js";

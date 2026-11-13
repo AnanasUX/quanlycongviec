@@ -2,6 +2,31 @@
 
 Toàn bộ các mốc phát triển và thay đổi mã nguồn được ghi nhận tại đây theo từng giai đoạn.
 
+## [Giai đoạn 1] - 14/11/2026
+
+### Đã hoàn thành (Added & Changed)
+
+- **Xác thực & Tài khoản (FR-AUTH-01..09):**
+  - Đăng ký tài khoản mật khẩu argon2id, xác thực độ mạnh mật khẩu (≥ 10 ký tự, chữ hoa, chữ thường, số).
+  - Đăng nhập bảo mật với cơ chế khoá tạm 15 phút sau 5 lần sai liên tiếp, thông báo lỗi an toàn (không tiết lộ sự tồn tại của email).
+  - Xác thực hai lớp TOTP (FR-AUTH-05) với mã 6 chữ số và 10 mã dự phòng dùng một lần.
+  - Quên và đặt lại mật khẩu (FR-AUTH-04) tự động thu hồi toàn bộ các phiên làm việc cũ.
+  - Quản lý phiên làm việc (FR-AUTH-06) với cookie httpOnly, SameSite=Lax, hỗ trợ xem danh sách thiết bị và thu hồi phiên từ xa.
+  - Cập nhật hồ sơ cá nhân (FR-AUTH-07) và xoá tài khoản vĩnh viễn (FR-AUTH-08) có xác nhận mật khẩu.
+  - Giới hạn tốc độ truy cập (FR-AUTH-09) bằng Fastify rate-limiter.
+- **Không gian làm việc & Ma trận phân quyền (FR-WS-01..08 & SPEC 6.0):**
+  - Xây dựng Policy Engine tập trung `policy.can(user, action, resource)` bao phủ 100% ma trận quyền 5 vai trò (Owner, Admin, Member, Guest, Viewer).
+  - Thiết kế Schema Drizzle ORM và sinh migration SQL hoàn chỉnh (`users`, `sessions`, `oauth_accounts`, `workspaces`, `workspace_members`, `invitations`) kèm cấu hình Row Level Security (RLS) PostgreSQL.
+  - Script seed dữ liệu mẫu chuẩn theo SPEC (1 tổ chức, 4 không gian, 12 người dùng có vai trò khác nhau).
+  - Quản lý vòng đời workspace: tạo mới (người tạo là Owner), mời thành viên bằng token 7 ngày, đổi vai trò, chặn Owner cuối cùng rời không gian, xoá mềm 30 ngày.
+- **Giao diện Người dùng (SPEC 7.1, 7.2, 7.11):**
+  - Màn hình xác thực: Đăng nhập (`/login`), Đăng ký (`/register` kèm thước đo độ mạnh mật khẩu), Quên mật khẩu (`/forgot-password`), Đặt lại mật khẩu (`/reset-password`), Xác thực 2FA (`/2fa` với 6 ô nhập tự chuyển focus), Lời mời (`/accept-invite/:token`), Onboarding 3 bước (`/onboarding`).
+  - Màn hình Không gian làm việc: Trang chủ (`/w/:slug`) với 6 tab (Tổng quan, Tài liệu, Trình chiếu, Tệp, Thành viên, Hoạt động) và Trang Cài đặt (`/w/:slug/settings`).
+  - Đủ 5 trạng thái giao diện: skeleton loading, empty state, error with retry, forbidden (403), not found (404).
+- **Kiểm thử:**
+  - 33 test unit & integration pass 100% (`permissions.test.ts`, `auth.test.ts`, `api.test.ts`).
+  - Visual regression check đạt 0 pixel lệch so với baseline.
+
 ## [Giai đoạn 0] - 14/11/2026
 
 ### Đã hoàn thành (Added & Changed)

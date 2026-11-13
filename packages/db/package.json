@@ -9,10 +9,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
     "drizzle-orm": "^0.39.3",
     "pg": "^8.13.3"
   },
   "devDependencies": {
+    "@types/node": "^22.19.17",
     "@types/pg": "^8.11.11",
     "drizzle-kit": "^0.30.4",
     "typescript": "^5.7.0"

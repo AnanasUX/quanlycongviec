@@ -2,6 +2,15 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
+import { LoginPage } from "./pages/auth/LoginPage";
+import { RegisterPage } from "./pages/auth/RegisterPage";
+import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
+import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
+import { TwoFactorPage } from "./pages/auth/TwoFactorPage";
+import { AcceptInvitePage } from "./pages/auth/AcceptInvitePage";
+import { OnboardingPage } from "./pages/auth/OnboardingPage";
+import { WorkspaceDetailPage } from "./pages/workspace/WorkspaceDetailPage";
+import { WorkspaceSettingsPage } from "./pages/workspace/WorkspaceSettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -11,6 +20,34 @@ export const router = createBrowserRouter([
         <DashboardPage />
       </AppShell>
     ),
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
+  },
+  {
+    path: "/2fa",
+    element: <TwoFactorPage />,
+  },
+  {
+    path: "/accept-invite/:token",
+    element: <AcceptInvitePage />,
+  },
+  {
+    path: "/onboarding",
+    element: <OnboardingPage />,
   },
   {
     path: "/docs",
@@ -64,7 +101,15 @@ export const router = createBrowserRouter([
     path: "/w/:slug",
     element: (
       <AppShell>
-        <PlaceholderPage />
+        <WorkspaceDetailPage />
+      </AppShell>
+    ),
+  },
+  {
+    path: "/w/:slug/settings",
+    element: (
+      <AppShell>
+        <WorkspaceSettingsPage />
       </AppShell>
     ),
   },
