@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+.pnpm-store
+docs/original
+docs/design/baseline
+docs/design/after
+pnpm-lock.yaml

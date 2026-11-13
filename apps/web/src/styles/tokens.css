@@ -1,0 +1,45 @@
+:root {
+  --primary: #6c5ce7;
+  --primary-dark: #5546d4;
+  --primary-soft: #efecff;
+  --ink: #16152a;
+  --muted: #77768b;
+  --border: #e9e9f1;
+  --surface: #ffffff;
+  --canvas: #f7f8fc;
+  --shadow: 0 8px 30px rgba(34, 31, 65, 0.07);
+
+  /* Màu loại nội dung (SPEC 3.2) */
+  --type-doc: #4d9bf5;
+  --type-team: #39bb83;
+  --type-slide: #f3a43c;
+  --type-cal: #806ee9;
+  --type-msg: #46a4dc;
+  --type-storage: #42b9dc;
+
+  /* Màu vạch sự kiện lịch (SPEC 3.2) */
+  --cal-event-1: #6c5ce7;
+  --cal-event-2: #36b37e;
+  --cal-event-3: #f59e0b;
+
+  /* Bán kính bo góc (SPEC 3.2) */
+  --radius-panel: 12px;
+  --radius-banner: 13px;
+  --radius-btn: 9px;
+  --radius-input: 9px;
+  --radius-modal: 16px;
+
+  /* Kích thước khung chuẩn (SPEC 3.2) */
+  --sidebar-width: 220px;
+  --content-max-width: 1500px;
+}
+
+[data-theme="dark"] {
+  --canvas: #121124;
+  --surface: #1c1b30;
+  --border: #2c2a4a;
+  --ink: #f0f0f5;
+  --muted: #9b9aa8;
+  --primary-soft: #28254f;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
