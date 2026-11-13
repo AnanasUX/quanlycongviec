@@ -133,6 +133,86 @@ describe("Fastify API Integration Tests (Phase 1: AUTH & WS)", () => {
       });
       expect(lockedRes.statusCode).toBe(401);
       expect(lockedRes.json().error.message).toContain("tạm thời bị khoá");
+
+      // Giả lập trôi qua 15 phút (mở lại tài khoản)
+      const { authService } = await import("./services/authService.js");
+      const user = Array.from((authService as any).users.values() as IterableIterator<any>).find(
+        (u: any) => u.email === targetEmail
+      );
+      if (user) {
+        user.lockedUntil = new Date(Date.now() - 1000); // Đã qua 15 phút
+      }
+
+      // Đăng nhập lại với mật khẩu đúng -> Thành công 200!
+      const recoveredRes = await app.inject({
+        method: "POST",
+        url: "/auth/login",
+        payload: { email: targetEmail, password: "Password12345!" },
+      });
+      expect(recoveredRes.statusCode).toBe(200);
+      expect(recoveredRes.json().data.user.email).toBe(targetEmail);
+    });
+
+    it("Mục 7: Test cookie Set-Cookie đầy đủ httpOnly, SameSite=Lax (và Secure ở production)", async () => {
+      const res = await app.inject({
+        method: "POST",
+        url: "/auth/login",
+        payload: {
+          email: "minhanh@workspace.vn",
+          password: "Password123!",
+        },
+      });
+
+      const setCookieHeader = res.headers["set-cookie"] as string;
+      expect(setCookieHeader).toBeDefined();
+      expect(setCookieHeader.toLowerCase()).toContain("httponly");
+      expect(setCookieHeader.toLowerCase()).toContain("samesite=lax");
+      expect(setCookieHeader.toLowerCase()).toContain("path=/");
+
+      // Thử nghiệm ở môi trường production
+      const origEnv = process.env.NODE_ENV;
+      try {
+        process.env.NODE_ENV = "production";
+        const prodApp = await buildApp();
+        const prodRes = await prodApp.inject({
+          method: "POST",
+          url: "/auth/login",
+          payload: {
+            email: "nam.hoang@workspace.vn",
+            password: "Password123!",
+          },
+        });
+        const prodCookie = prodRes.headers["set-cookie"] as string;
+        expect(prodCookie.toLowerCase()).toContain("secure");
+        await prodApp.close();
+      } finally {
+        process.env.NODE_ENV = origEnv;
+      }
+    });
+
+    it("Mục 8: Test rate limit - gửi vượt ngưỡng và xác nhận trả về 429", async () => {
+      // Dùng instance app riêng biệt để không ảnh hưởng đến hạn mức của các bài test khác
+      const rateLimitApp = await buildApp();
+      try {
+        let hitRateLimit = false;
+        let lastRes: any = null;
+        for (let i = 0; i < 110; i++) {
+          const res = await rateLimitApp.inject({
+            method: "GET",
+            url: "/healthz",
+          });
+          if (res.statusCode === 429) {
+            hitRateLimit = true;
+            lastRes = res;
+            break;
+          }
+        }
+        expect(hitRateLimit).toBe(true);
+        expect(lastRes.statusCode).toBe(429);
+        expect(lastRes.json().error.code).toBe("RATE_LIMITED");
+      } finally {
+        await rateLimitApp.close();
+      }
     });
 
     it("FR-AUTH-06: Xem danh sách thiết bị/phiên làm việc (GET /auth/sessions)", async () => {

@@ -31,7 +31,8 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(rateLimit, {
     max: 100,
     timeWindow: "1 minute",
-    errorResponseBuilder: (req) => ({
+    errorResponseBuilder: (req, _context) => ({
+      statusCode: 429,
       error: {
         code: "RATE_LIMITED",
         message: "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau giây lát.",
@@ -64,6 +65,9 @@ export async function buildApp(): Promise<FastifyInstance> {
   app.setErrorHandler((error: unknown, req, reply) => {
     const err = error as any;
     const statusCode = err?.statusCode || 500;
+    if (err?.error && typeof err.error === "object") {
+      return reply.status(statusCode).send(err);
+    }
     return reply.status(statusCode).send({
       error: {
         code: err?.code || "INTERNAL_ERROR",
