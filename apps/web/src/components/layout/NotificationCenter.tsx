@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Bell, CheckCircle2, MessageSquare, X } from "lucide-react";
+import { notificationItemsFixture } from "../../data/fixtures";
 
 export function NotificationCenter() {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -23,24 +24,17 @@ export function NotificationCenter() {
               <X size={16} />
             </button>
           </div>
-          <div className="notice">
-            <span className="notice-icon purple">
-              <CheckCircle2 size={16} />
-            </span>
-            <p>
-              <strong>Tuấn đã hoàn thành một công việc</strong>
-              <small>Hoàn thiện kế hoạch Q1 · 5 phút trước</small>
-            </p>
-          </div>
-          <div className="notice">
-            <span className="notice-icon blue">
-              <MessageSquare size={16} />
-            </span>
-            <p>
-              <strong>Bạn có 3 tin nhắn mới</strong>
-              <small>Trong nhóm Dự án Sản phẩm</small>
-            </p>
-          </div>
+          {notificationItemsFixture.map((item) => (
+            <div className="notice" key={item.id}>
+              <span className={`notice-icon ${item.color}`}>
+                {item.type === "task" ? <CheckCircle2 size={16} /> : <MessageSquare size={16} />}
+              </span>
+              <p>
+                <strong>{item.title}</strong>
+                <small>{item.meta}</small>
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </div>

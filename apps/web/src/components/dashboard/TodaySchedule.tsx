@@ -1,5 +1,6 @@
 import { CalendarDays, MoreHorizontal } from "lucide-react";
 import { schedule } from "../../data/mock";
+import { scheduleDateFixture } from "../../data/fixtures";
 import { useUI } from "../../context/UIContext";
 import { SectionHeader } from "../shared/SectionHeader";
 
@@ -14,7 +15,7 @@ export function TodaySchedule() {
         action="Xem lịch"
         onAction={() => notify("Đang mở lịch làm việc")}
       />
-      <div className="date-note">Thứ Hai, 20 tháng 1, 2025</div>
+      <div className="date-note">{scheduleDateFixture.displayDate}</div>
       <div className="schedule-list">
         {schedule.map((event) => (
           <button

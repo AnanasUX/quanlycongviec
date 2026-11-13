@@ -1,5 +1,6 @@
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useState } from "react";
+import { currentUserFixture } from "../../data/fixtures";
 import { useUI } from "../../context/UIContext";
 
 export function UserMenu() {
@@ -14,16 +15,16 @@ export function UserMenu() {
         onClick={() => setShowDropdown((open) => !open)}
         aria-label="Hồ sơ người dùng"
       >
-        <span>MA</span>
+        <span>{currentUserFixture.initials}</span>
         <ChevronDown size={14} />
       </button>
 
       {showDropdown && (
         <div className="notification-popover" style={{ width: "200px", padding: "10px", right: 0 }}>
           <div style={{ padding: "6px 8px", borderBottom: "1px solid var(--border)" }}>
-            <strong>Minh Anh</strong>
+            <strong>{currentUserFixture.name}</strong>
             <p style={{ margin: 0, fontSize: "12px", color: "var(--muted)" }}>
-              minhanh@workspace.vn
+              {currentUserFixture.email}
             </p>
           </div>
           <button

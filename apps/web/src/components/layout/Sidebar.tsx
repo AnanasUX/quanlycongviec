@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { ChevronRight, Cloud, Grid2X2, Plus, X } from "lucide-react";
 import { mainNavigation, workspaceNavigation } from "../../data/mock";
+import { storageUsageFixture } from "../../data/fixtures";
 import { useUI } from "../../context/UIContext";
 
 export function Sidebar({ activeLabel }: { activeLabel?: string }) {
@@ -78,8 +79,8 @@ export function Sidebar({ activeLabel }: { activeLabel?: string }) {
         <div className="storage-row">
           <Cloud size={17} />
           <div>
-            <span>Dữ liệu đang dùng</span>
-            <strong>128.4 GB / 500 GB</strong>
+            <span>{storageUsageFixture.label}</span>
+            <strong>{storageUsageFixture.displayUsage}</strong>
           </div>
           <ChevronRight size={15} />
         </div>

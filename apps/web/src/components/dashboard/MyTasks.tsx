@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Check, CheckCircle2, Plus } from "lucide-react";
 import type { Task } from "../../types";
+import { tasksTabsFixture } from "../../data/fixtures";
 import { useUI } from "../../context/UIContext";
 import { SectionHeader } from "../shared/SectionHeader";
 
@@ -35,7 +36,7 @@ export function MyTasks({
           className={taskFilter === "assigned" ? "active" : ""}
           onClick={() => setTaskFilter("assigned")}
         >
-          Sắp tới (3)
+          {tasksTabsFixture.upcomingTabLabel}
         </button>
         <button
           type="button"

@@ -1,13 +1,16 @@
 import { Check, FileText, Sparkles, Users } from "lucide-react";
+import { currentUserFixture } from "../../data/fixtures";
 
 export function WelcomeBanner() {
+  const greetingText = `${currentUserFixture.greetingPrefix}, ${currentUserFixture.name}`;
+
   return (
     <section className="welcome-card">
       <div className="welcome-copy">
         <div className="eyebrow">
           <Sparkles size={14} /> Tổng quan hôm nay
         </div>
-        <h1>Chào buổi sáng, Minh Anh</h1>
+        <h1>{greetingText}</h1>
         <p>Cùng làm việc, chia sẻ và hoàn thành mục tiêu với đội ngũ.</p>
       </div>
       <div className="hero-art" aria-hidden="true">

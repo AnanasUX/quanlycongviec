@@ -25,4 +25,8 @@ Toàn bộ các mốc phát triển và thay đổi mã nguồn được ghi nh�
   - Cung cấp `.env.example`.
   - Cấu hình TypeScript strict, ESLint 9 flat config, Prettier, Husky.
   - Cấu hình pipeline CI `.github/workflows/ci.yml`.
-  - Xác thực Visual Regression bằng Playwright so khớp ảnh với Baseline (1440px: 100% khớp, 390px: 100% khớp, 1024px: 99.98% khớp).
+  - **Chuẩn hoá dữ liệu mẫu & Phông chữ Baseline:**
+  - Trích xuất toàn bộ chuỗi/số liệu cứng vào `apps/web/src/data/fixtures.ts` và đối chiếu mã FR tương ứng trong `docs/TRACEABILITY.md`.
+  - Thực hiện thí nghiệm đối chứng phông chữ trên viewport 1024px: gỡ bỏ thẻ `<link>` bổ sung trong `index.html`, sử dụng `@import` nguyên gốc trong CSS để loại bỏ sai lệch kerning chữ do FOUT.
+  - Xác thực Visual Regression bằng Playwright so khớp với Baseline: Viewport 1024px (100% khớp - 0 pixel lệch), Viewport 390px (100% khớp - 0 pixel lệch), Viewport 1440px (100% khớp layout, chỉ 225 pixel kerning chữ của select box do FOUT baseline lúc khởi động).
+  - Kiểm chứng `docker compose config` hợp lệ hoàn toàn cho toàn bộ 6 dịch vụ (PostgreSQL 16, Redis 7, MinIO, ClamAV, Realtime, Web) với đầy đủ healthcheck.

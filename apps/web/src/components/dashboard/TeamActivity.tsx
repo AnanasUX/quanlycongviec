@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ListTodo } from "lucide-react";
+import { teamActivityMetricsFixture } from "../../data/fixtures";
 
 export function TeamActivity() {
-  const [activityRange, setActivityRange] = useState("7 ngày qua");
+  const [activityRange, setActivityRange] = useState(teamActivityMetricsFixture.defaultRange);
 
   return (
     <section className="panel activity-panel">
@@ -16,25 +17,25 @@ export function TeamActivity() {
           onChange={(event) => setActivityRange(event.target.value)}
           aria-label="Khoảng thời gian"
         >
-          <option>7 ngày qua</option>
-          <option>30 ngày qua</option>
+          <option>{teamActivityMetricsFixture.ranges[0]}</option>
+          <option>{teamActivityMetricsFixture.ranges[1]}</option>
         </select>
       </div>
       <div className="metrics">
         <div>
-          <strong>124</strong>
+          <strong>{teamActivityMetricsFixture.docsCreated}</strong>
           <span>Tài liệu được tạo</span>
-          <small>+8.5%</small>
+          <small>{teamActivityMetricsFixture.docsCreatedGrowth}</small>
         </div>
         <div>
-          <strong>56</strong>
+          <strong>{teamActivityMetricsFixture.editsCount}</strong>
           <span>Lượt chỉnh sửa</span>
-          <small>+12%</small>
+          <small>{teamActivityMetricsFixture.editsGrowth}</small>
         </div>
         <div>
-          <strong>28</strong>
+          <strong>{teamActivityMetricsFixture.sharesCount}</strong>
           <span>Lượt chia sẻ</span>
-          <small>+3.2%</small>
+          <small>{teamActivityMetricsFixture.sharesGrowth}</small>
         </div>
       </div>
       <div className="chart" aria-label="Biểu đồ hoạt động nhóm">
@@ -50,28 +51,16 @@ export function TeamActivity() {
               <stop offset="100%" stopColor="#7766e9" stopOpacity="0" />
             </linearGradient>
           </defs>
-          <path
-            d="M10 84 L70 68 L130 73 L190 43 L250 34 L310 39 L370 65 L410 56 L410 100 L10 100 Z"
-            fill="url(#area)"
-          />
+          <path d={teamActivityMetricsFixture.chartSvg.pathD} fill="url(#area)" />
           <polyline
-            points="10,84 70,68 130,73 190,43 250,34 310,39 370,65 410,56"
+            points={teamActivityMetricsFixture.chartSvg.polylinePoints}
             fill="none"
             stroke="#7766e9"
             strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          {[
-            ["10", "84"],
-            ["70", "68"],
-            ["130", "73"],
-            ["190", "43"],
-            ["250", "34"],
-            ["310", "39"],
-            ["370", "65"],
-            ["410", "56"],
-          ].map(([cx, cy]) => (
+          {teamActivityMetricsFixture.chartSvg.circles.map(([cx, cy]) => (
             <circle key={cx} cx={cx} cy={cy} r="4" fill="#fff" stroke="#7766e9" strokeWidth="2" />
           ))}
         </svg>

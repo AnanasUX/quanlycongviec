@@ -1,4 +1,5 @@
 import { avatarColors } from "../../data/mock";
+import { avatarStackFixture } from "../../data/fixtures";
 
 export function AvatarStack({ members }: { members: string[] }) {
   return (
@@ -11,7 +12,7 @@ export function AvatarStack({ members }: { members: string[] }) {
           {member}
         </span>
       ))}
-      <b>+5</b>
+      <b>{avatarStackFixture.overflowLabel}</b>
     </div>
   );
 }
