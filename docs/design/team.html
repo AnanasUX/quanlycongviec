@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe Đội ngũ (SPEC 7.8 & 6.12) - Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Nạp biến CSS ĐÚNG 100% từ apps/web/src/styles/tokens.css */
+    :root {
+      --primary: #6c5ce7;
+      --primary-dark: #5546d4;
+      --primary-soft: #efecff;
+      --ink: #16152a;
+      --muted: #77768b;
+      --border: #e9e9f1;
+      --surface: #ffffff;
+      --canvas: #f7f8fc;
+      --shadow: 0 8px 30px rgba(34, 31, 65, 0.07);
+
+      /* Màu phân hệ SPEC 3.2 */
+      --type-doc: #4d9bf5;
+      --type-team: #39bb83;
+      --type-slide: #f3a43c;
+      --type-cal: #806ee9;
+      --type-msg: #46a4dc;
+      --type-storage: #42b9dc;
+
+      /* Màu vạch sự kiện lịch SPEC 3.2 */
+      --cal-event-1: #6c5ce7;
+      --cal-event-2: #36b37e;
+      --cal-event-3: #f59e0b;
+
+      /* Bán kính bo góc SPEC 3.2 */
+      --radius-panel: 12px;
+      --radius-banner: 13px;
+      --radius-btn: 9px;
+      --radius-input: 9px;
+      --radius-modal: 16px;
+
+      /* Kích thước khung chuẩn SPEC 3.2 */
+      --sidebar-width: 220px;
+      --content-max-width: 1500px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scrollbar-width: thin;
+      scrollbar-color: #d9d7e7 transparent;
+    }
+
+    body {
+      font-family: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--ink);
+      background-color: var(--canvas);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Thanh chỉ dùng cho bước duyệt wireframe, sẽ loại bỏ khi code */
+    .review-only {
+      background: var(--ink);
+      color: #fff;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .review-only-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .state-switchers {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .state-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      transition: all 0.15s ease;
+    }
+
+    .state-btn.active, .state-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Bố cục chính */
+    .main-layout {
+      display: flex;
+      flex: 1;
+      max-width: var(--content-max-width);
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    /* Header của Đội ngũ (Mục 7.8: Đội ngũ [Mời thành viên] [Tạo nhóm]) */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(57, 187, 131, 0.12);
+      color: var(--type-team);
+      border-radius: var(--radius-btn);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-title-group h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .header-count-badge {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Nút bấm (Button Tokens) */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--ink);
+    }
+
+    .btn-secondary:hover {
+      background: var(--canvas);
+      border-color: #d8d7e5;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* Thanh Tab (Mục 7.8: Tab: Thành viên | Nhóm | Sơ đồ tổ chức | Lời mời đang chờ) */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+    }
+
+    .nav-tab-item {
+      padding: 10px 18px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .nav-tab-item:hover {
+      color: var(--ink);
+    }
+
+    .nav-tab-item.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 600;
+    }
+
+    .tab-badge {
+      background: #e5e5ed;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .nav-tab-item.active .tab-badge {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    /* Bộ lọc và Tìm kiếm (Mục 7.8: Bộ lọc: Phòng ban ▾ Vai trò ▾ Trạng thái ▾ [Tìm tên, email]) */
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-panel);
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .filters-left {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .custom-select {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 7px 12px;
+      border-radius: var(--radius-input);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-select:hover {
+      border-color: #d0cfe0;
+    }
+
+    .search-input-box {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-input-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 7px 12px 7px 32px;
+      border-radius: var(--radius-input);
+      font-family: inherit;
+      font-size: 12px;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    /* Khung Bảng danh bạ thành viên (Mục 7.8: [Bảng: avatar+tên | chức danh | phòng ban | vai trò ▾ | trạng thái | hoạt động cuối | ⋯]) */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-panel);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: #fbfbfd;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      font-size: 13px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+    tbody tr:hover {
+      background: #fbfaff;
+    }
+
+    tbody tr.selected {
+      background: rgba(108, 92, 231, 0.05);
+    }
+
+    /* Ô thông tin thành viên (Avatar + Tên + Email) */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+    }
+
+    .avatar-initials {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    /* Chấm trạng thái kết nối (SPEC 6.12 & SPEC 7.8) */
+    .status-dot {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    .status-online { background-color: var(--type-team); }
+    .status-busy { background-color: var(--cal-event-3); }
+    .status-away { background-color: var(--type-cal); }
+    .status-offline { background-color: var(--muted); }
+
+    .user-name-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .user-email {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Huy hiệu Vai trò & Phòng ban */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-dept {
+      background: #f0eff8;
+      color: #4a4868;
+    }
+
+    .badge-role-owner {
+      background: #fef3c7;
+      color: #92400e;
+      font-weight: 600;
+    }
+
+    .badge-role-admin {
+      background: #e0e7ff;
+      color: #3730a3;
+      font-weight: 600;
+    }
+
+    .badge-role-member {
+      background: #ecfdf5;
+      color: #065f46;
+    }
+
+    .badge-role-guest {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .badge-role-viewer {
+      background: #fdf2f8;
+      color: #9d174d;
+    }
+
+    /* Ngăn hồ sơ bên phải (SPEC 7.8: Ngăn hồ sơ (phải): liên hệ, lịch rảnh/bận, tài liệu chung, [Nhắn tin] [Mời họp]) */
+    .profile-drawer {
+      width: 360px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-panel);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: var(--shadow);
+      flex-shrink: 0;
+      align-self: flex-start;
+      position: sticky;
+      top: 24px;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .drawer-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .drawer-close-btn:hover {
+      background: var(--canvas);
+      color: var(--ink);
+    }
+
+    .drawer-profile-summary {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-avatar-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .drawer-avatar-lg .status-dot {
+      width: 14px;
+      height: 14px;
+      border-width: 2.5px;
+    }
+
+    .drawer-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .drawer-title {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .drawer-action-buttons {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .drawer-action-buttons .btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* Các khối chi tiết trong Ngăn hồ sơ */
+    .drawer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .contact-item svg {
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* Khối Lịch rảnh/bận (SPEC 7.8 & FR-TEAM-02) */
+    .schedule-bar {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .schedule-slot {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .slot-busy {
+      background: rgba(245, 158, 11, 0.12);
+      color: #92400e;
+      font-weight: 500;
+    }
+
+    .slot-free {
+      background: rgba(16, 185, 129, 0.12);
+      color: #065f46;
+      font-weight: 500;
+    }
+
+    /* Khối Tài liệu chung gần đây (SPEC 7.8) */
+    .shared-doc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.15s ease;
+    }
+
+    .shared-doc-item:hover {
+      background: #f1f0f8;
+    }
+
+    .shared-doc-item svg {
+      color: var(--type-doc);
+      flex-shrink: 0;
+    }
+
+    /* Hộp rỗng hiển thị khi tab chưa có mô tả bố cục trong SPEC */
+    .tab-placeholder-box {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-panel);
+      padding: 56px 24px;
+      text-align: center;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .tab-placeholder-box svg {
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .tab-placeholder-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .tab-placeholder-desc {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    /* Các trạng thái dùng chung (SPEC 7.11) */
+    .state-view {
+      display: none;
+    }
+
+    .state-view.active {
+      display: block;
+    }
+
+    /* Skeleton Loading (SPEC 7.11) */
+    .skeleton-line {
+      height: 12px;
+      background: linear-gradient(90deg, #f0eff6 25%, #e6e5f0 50%, #f0eff6 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #e6e5f0;
+      flex-shrink: 0;
+    }
+
+    /* Hộp thông báo Rỗng / Lỗi / 403 (SPEC 7.11) */
+    .card-message-state {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-panel);
+      padding: 64px 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .icon-state-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-state-empty { background: rgba(108, 92, 231, 0.1); color: var(--primary); }
+    .icon-state-error { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .icon-state-forbidden { background: rgba(245, 158, 11, 0.1); color: var(--cal-event-3); }
+
+    .state-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .state-desc {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    .state-request-id {
+      font-family: monospace;
+      font-size: 11px;
+      background: var(--canvas);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Thanh .review-only (Chỉ dùng cho bước duyệt wireframe, sẽ loại bỏ khi code) -->
+  <div class="review-only">
+    <div>
+      <span class="review-only-badge">CHỈ DÙNG CHO BƯỚC DUYỆT WIREFRAME, SẼ LOẠI BỎ KHI CODE</span>
+      <span style="margin-left: 8px; opacity: 0.85;">SPEC 7.8 & 6.12 | Token: tokens.css | Font: Be Vietnam Pro</span>
+    </div>
+    <div class="state-switchers">
+      <span style="font-size: 11px; color: #a9a8ba; margin-right: 6px;">Trạng thái 7.11:</span>
+      <button class="state-btn active" onclick="switchState('normal')">Chuẩn (Normal)</button>
+      <button class="state-btn" onclick="switchState('skeleton')">Đang tải (Skeleton)</button>
+      <button class="state-btn" onclick="switchState('empty')">Rỗng (Empty)</button>
+      <button class="state-btn" onclick="switchState('error')">Lỗi (Error)</button>
+      <button class="state-btn" onclick="switchState('forbidden')">Cấm (403)</button>
+    </div>
+  </div>
+
+  <!-- Bố cục chính của trang Đội ngũ -->
+  <div class="main-layout">
+    <div class="content-area">
+
+      <!-- 1. Header Trang: Đội ngũ [Mời thành viên] [Tạo nhóm] -->
+      <div class="page-header">
+        <div class="header-title-group">
+          <div class="header-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h1>Đội ngũ</h1>
+            <span class="header-count-badge">12 thành viên</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn btn-secondary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Tạo nhóm
+          </button>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Mời thành viên
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Hệ thống Tab (Text thuần, không icon theo SPEC 7.8) -->
+      <div class="nav-tabs">
+        <div class="nav-tab-item active" onclick="switchTab(this, 'tab-members')">
+          Thành viên
+          <span class="tab-badge">12</span>
+        </div>
+        <div class="nav-tab-item" onclick="switchTab(this, 'tab-teams')">
+          Nhóm
+          <span class="tab-badge">4</span>
+        </div>
+        <div class="nav-tab-item" onclick="switchTab(this, 'tab-org')">
+          Sơ đồ tổ chức
+        </div>
+        <div class="nav-tab-item" onclick="switchTab(this, 'tab-invites')">
+          Lời mời đang chờ
+          <span class="tab-badge" style="background: rgba(245, 158, 11, 0.15); color: #b45309;">2</span>
+        </div>
+      </div>
+
+      <!-- Tab Content 1: THÀNH VIÊN (SPEC 7.8) -->
+      <div id="tab-members-content">
+        <!-- 3. Thanh Bộ lọc: Phòng ban ▾ Vai trò ▾ Trạng thái ▾ [Tìm tên, email] -->
+        <div class="filter-panel">
+          <div class="filters-left">
+            <select class="custom-select">
+              <option>Phòng ban: Tất cả ▾</option>
+              <option>Kỹ thuật phần mềm</option>
+              <option>Thiết kế sản phẩm</option>
+              <option>Marketing & Truyền thông</option>
+              <option>Nhân sự & Văn hoá</option>
+            </select>
+
+            <select class="custom-select">
+              <option>Vai trò: Tất cả ▾</option>
+              <option>Chủ sở hữu (Owner)</option>
+              <option>Quản trị viên (Admin)</option>
+              <option>Thành viên (Member)</option>
+              <option>Khách (Guest)</option>
+              <option>Người xem (Viewer)</option>
+            </select>
+
+            <select class="custom-select">
+              <option>Trạng thái: Tất cả ▾</option>
+              <option>🟢 Trực tuyến</option>
+              <option>🟡 Đang họp</option>
+              <option>🟣 Nghỉ phép</option>
+              <option>⚪ Ngoại tuyến</option>
+            </select>
+          </div>
+
+          <div class="search-input-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" class="search-input" placeholder="Tìm tên, email...">
+          </div>
+        </div>
+
+        <!-- 4. KHỐI NỘI DUNG CHÍNH (Theo các trạng thái 7.11) -->
+
+        <!-- TRẠNG THÁI A: CHUẨN (NORMAL) - Bảng danh bạ Mục 7.8 (Không có checkbox) -->
+        <div id="state-normal" class="state-view active" style="margin-top: 20px;">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Thành viên</th>
+                  <th>Chức danh</th>
+                  <th>Phòng ban</th>
+                  <th>Vai trò ▾</th>
+                  <th>Trạng thái</th>
+                  <th>Hoạt động cuối</th>
+                  <th style="width: 44px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1: Minh Anh (Owner) - Selected -->
+                <tr class="selected" onclick="selectMember('Minh Anh', 'minhanh@workspace.vn', 'Giám đốc Kỹ thuật (CTO)', 'Kỹ thuật phần mềm', 'Chủ sở hữu', 'badge-role-owner', 'Trực tuyến', 'status-online', '#7766e9', 'MA')">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar-wrapper">
+                        <div class="avatar-initials" style="background: #7766e9;">MA</div>
+                        <div class="status-dot status-online" title="Trực tuyến"></div>
+                      </div>
+                      <div class="user-name-box">
+                        <span class="user-name">Minh Anh</span>
+                        <span class="user-email">minhanh@workspace.vn</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Giám đốc Kỹ thuật (CTO)</td>
+                  <td><span class="badge badge-dept">Kỹ thuật phần mềm</span></td>
+                  <td><span class="badge badge-role-owner">Chủ sở hữu ▾</span></td>
+                  <td><span style="display: inline-flex; align-items: center; gap: 6px;"><span class="status-dot status-online" style="position: static;"></span>Trực tuyến</span></td>
+                  <td style="color: var(--muted); font-size: 12px;">Vừa xong</td>
+                  <td style="text-align: center;"><button class="drawer-close-btn">⋯</button></td>
+                </tr>
+
+                <!-- Row 2: Hoàng Nam (Admin) -->
+                <tr onclick="selectMember('Hoàng Nam', 'nam.hoang@workspace.vn', 'Kỹ sư Trưởng (Lead)', 'Kỹ thuật phần mềm', 'Quản trị viên', 'badge-role-admin', 'Đang họp', 'status-busy', '#3b82f6', 'HN')">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar-wrapper">
+                        <div class="avatar-initials" style="background: #3b82f6;">HN</div>
+                        <div class="status-dot status-busy" title="Đang họp"></div>
+                      </div>
+                      <div class="user-name-box">
+                        <span class="user-name">Hoàng Nam</span>
+                        <span class="user-email">nam.hoang@workspace.vn</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Kỹ sư Trưởng (Lead)</td>
+                  <td><span class="badge badge-dept">Kỹ thuật phần mềm</span></td>
+                  <td><span class="badge badge-role-admin">Quản trị viên ▾</span></td>
+                  <td><span style="display: inline-flex; align-items: center; gap: 6px;"><span class="status-dot status-busy" style="position: static;"></span>Đang họp</span></td>
+                  <td style="color: var(--muted); font-size: 12px;">15 phút trước</td>
+                  <td style="text-align: center;"><button class="drawer-close-btn">⋯</button></td>
+                </tr>
+
+                <!-- Row 3: Thuỳ Trang (Admin) -->
+                <tr onclick="selectMember('Thuỳ Trang', 'trang.thuy@workspace.vn', 'Giám đốc Vận hành', 'Nhân sự & Văn hoá', 'Quản trị viên', 'badge-role-admin', 'Trực tuyến', 'status-online', '#ec4899', 'TT')">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar-wrapper">
+                        <div class="avatar-initials" style="background: #ec4899;">TT</div>
+                        <div class="status-dot status-online" title="Trực tuyến"></div>
+                      </div>
+                      <div class="user-name-box">
+                        <span class="user-name">Thuỳ Trang</span>
+                        <span class="user-email">trang.thuy@workspace.vn</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Giám đốc Vận hành</td>
+                  <td><span class="badge badge-dept">Nhân sự & Văn hoá</span></td>
+                  <td><span class="badge badge-role-admin">Quản trị viên ▾</span></td>
+                  <td><span style="display: inline-flex; align-items: center; gap: 6px;"><span class="status-dot status-online" style="position: static;"></span>Trực tuyến</span></td>
+                  <td style="color: var(--muted); font-size: 12px;">5 phút trước</td>
+                  <td style="text-align: center;"><button class="drawer-close-btn">⋯</button></td>
+                </tr>
+
+                <!-- Row 4: Quốc Tuấn (Member) -->
+                <tr onclick="selectMember('Quốc Tuấn', 'tuan.quoc@workspace.vn', 'Nhà thiết kế Sản phẩm UI/UX', 'Thiết kế sản phẩm', 'Thành viên', 'badge-role-member', 'Nghỉ phép', 'status-away', '#10b981', 'QT')">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar-wrapper">
+                        <div class="avatar-initials" style="background: #10b981;">QT</div>
+                        <div class="status-dot status-away" title="Nghỉ phép"></div>
+                      </div>
+                      <div class="user-name-box">
+                        <span class="user-name">Quốc Tuấn</span>
+                        <span class="user-email">tuan.quoc@workspace.vn</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Thiết kế Sản phẩm UI/UX</td>
+                  <td><span class="badge badge-dept">Thiết kế sản phẩm</span></td>
+                  <td><span class="badge badge-role-member">Thành viên ▾</span></td>
+                  <td><span style="display: inline-flex; align-items: center; gap: 6px;"><span class="status-dot status-away" style="position: static;"></span>Nghỉ phép</span></td>
+                  <td style="color: var(--muted); font-size: 12px;">Hôm qua</td>
+                  <td style="text-align: center;"><button class="drawer-close-btn">⋯</button></td>
+                </tr>
+
+                <!-- Row 5: Đối tác Công nghệ (Guest) -->
+                <tr onclick="selectMember('Đối tác Công nghệ', 'partner.tech@external.vn', 'Chuyên gia An ninh mạng', 'Bên ngoài', 'Khách', 'badge-role-guest', 'Ngoại tuyến', 'status-offline', '#f59e0b', 'DT')">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar-wrapper">
+                        <div class="avatar-initials" style="background: #f59e0b;">DT</div>
+                        <div class="status-dot status-offline" title="Ngoại tuyến"></div>
+                      </div>
+                      <div class="user-name-box">
+                        <span class="user-name">Đối tác Công nghệ</span>
+                        <span class="user-email">partner.tech@external.vn</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Chuyên gia An ninh mạng</td>
+                  <td><span class="badge badge-dept">Bên ngoài</span></td>
+                  <td><span class="badge badge-role-guest">Khách ▾</span></td>
+                  <td><span style="display: inline-flex; align-items: center; gap: 6px;"><span class="status-dot status-offline" style="position: static;"></span>Ngoại tuyến</span></td>
+                  <td style="color: var(--muted); font-size: 12px;">3 ngày trước</td>
+                  <td style="text-align: center;"><button class="drawer-close-btn">⋯</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TRẠNG THÁI B: ĐANG TẢI (SKELETON - SPEC 7.11) -->
+        <div id="state-skeleton" class="state-view" style="margin-top: 20px;">
+          <div class="table-container" style="padding: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="skeleton-circle"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div class="skeleton-line" style="width: 30%;"></div>
+                  <div class="skeleton-line" style="width: 20%;"></div>
+                </div>
+                <div class="skeleton-line" style="width: 15%;"></div>
+                <div class="skeleton-line" style="width: 15%;"></div>
+              </div>
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="skeleton-circle"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div class="skeleton-line" style="width: 35%;"></div>
+                  <div class="skeleton-line" style="width: 25%;"></div>
+                </div>
+                <div class="skeleton-line" style="width: 15%;"></div>
+                <div class="skeleton-line" style="width: 15%;"></div>
+              </div>
+              <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="skeleton-circle"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div class="skeleton-line" style="width: 28%;"></div>
+                  <div class="skeleton-line" style="width: 18%;"></div>
+                </div>
+                <div class="skeleton-line" style="width: 15%;"></div>
+                <div class="skeleton-line" style="width: 15%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRẠNG THÁI C: RỖNG (EMPTY - SPEC 7.11) -->
+        <div id="state-empty" class="state-view" style="margin-top: 20px;">
+          <div class="card-message-state">
+            <div class="icon-state-circle icon-state-empty">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>
+            </div>
+            <div class="state-title">Không tìm thấy thành viên nào</div>
+            <div class="state-desc">Không có thành viên nào khớp với bộ lọc hiện tại của bạn. Hãy thử thay đổi từ khoá tìm kiếm hoặc đặt lại các bộ lọc.</div>
+            <button class="btn btn-secondary btn-sm" onclick="switchState('normal')">Đặt lại bộ lọc</button>
+          </div>
+        </div>
+
+        <!-- TRẠNG THÁI D: LỖI (ERROR - SPEC 7.11) -->
+        <div id="state-error" class="state-view" style="margin-top: 20px;">
+          <div class="card-message-state">
+            <div class="icon-state-circle icon-state-error">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="state-title">Không thể tải danh sách đội ngũ</div>
+            <div class="state-desc">Đã xảy ra sự cố khi kết nối tới máy chủ. Dữ liệu danh bạ chưa thể hiển thị. Vui lòng thử lại sau giây lát.</div>
+            <span class="state-request-id">Mã yêu cầu (requestId): req-team-9f82d1c4</span>
+            <button class="btn btn-primary btn-sm" onclick="switchState('normal')">Thử lại</button>
+          </div>
+        </div>
+
+        <!-- TRẠNG THÁI E: CẤM (403 FORBIDDEN - SPEC 7.11) -->
+        <div id="state-forbidden" class="state-view" style="margin-top: 20px;">
+          <div class="card-message-state">
+            <div class="icon-state-circle icon-state-forbidden">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="state-title">Bạn không có quyền truy cập khu vực này</div>
+            <div class="state-desc">Vai trò hiện tại của bạn (Khách / Người xem) bị giới hạn xem danh bạ nội bộ hoặc cấu hình thành viên trong không gian làm việc này.</div>
+            <button class="btn btn-primary btn-sm">Yêu cầu quyền truy cập</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: NHÓM (Chưa mô tả bố cục trong SPEC) -->
+      <div id="tab-teams-content" style="display: none;">
+        <div class="tab-placeholder-box">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <div class="tab-placeholder-text">SPEC chưa mô tả bố cục, chờ quyết định</div>
+          <div class="tab-placeholder-desc">Mục 7.8 chỉ nêu tên Tab "Nhóm" và FR-TEAM-03 (tạo nhóm, gán trưởng nhóm) nhưng chưa đặc tả chi tiết giao diện danh sách nhóm.</div>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: SƠ ĐỒ TỔ CHỨC (Chưa mô tả bố cục trong SPEC) -->
+      <div id="tab-org-content" style="display: none;">
+        <div class="tab-placeholder-box">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="4" rx="1"/><rect x="2" y="17" width="6" height="4" rx="1"/><rect x="16" y="17" width="6" height="4" rx="1"/><path d="M12 7v4m0 0H5v6m7-6h7v6"/></svg>
+          <div class="tab-placeholder-text">SPEC chưa mô tả bố cục, chờ quyết định</div>
+          <div class="tab-placeholder-desc">Mục 7.8 và FR-TEAM-04 chỉ nêu nguyên tắc "Cây báo cáo trực tiếp; kéo-thả đổi người quản lý" nhưng chưa có wireframe cụ thể cho cây phân cấp.</div>
+        </div>
+      </div>
+
+      <!-- Tab Content 4: LỜI MỜI ĐANG CHỜ (Chưa mô tả bố cục trong SPEC) -->
+      <div id="tab-invites-content" style="display: none;">
+        <div class="tab-placeholder-box">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <div class="tab-placeholder-text">SPEC chưa mô tả bố cục, chờ quyết định</div>
+          <div class="tab-placeholder-desc">Mục 7.8 chỉ liệt kê tên Tab "Lời mời đang chờ", chưa có wireframe bảng danh sách lời mời (các cột dữ liệu, nút thu hồi/gửi lại).</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 5. NGĂN HỒ SƠ BÊN PHẢI (Mục 7.8: Ngăn hồ sơ (phải): liên hệ, lịch rảnh/bận, tài liệu chung, [Nhắn tin] [Mời họp]) -->
+    <div class="profile-drawer" id="profileDrawer">
+      <div class="drawer-header">
+        <span style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Chi tiết thành viên</span>
+        <button class="drawer-close-btn" onclick="toggleDrawer(false)" title="Đóng ngăn">✕</button>
+      </div>
+
+      <div class="drawer-profile-summary">
+        <div class="drawer-avatar-lg">
+          <div id="drawerAvatar" class="avatar-initials" style="background: #7766e9; font-size: 24px;">MA</div>
+          <div id="drawerStatusDot" class="status-dot status-online" style="bottom: 2px; right: 2px;"></div>
+        </div>
+        <div id="drawerName" class="drawer-name">Minh Anh</div>
+        <div id="drawerTitle" class="drawer-title">Giám đốc Kỹ thuật (CTO)</div>
+        <div style="display: flex; gap: 6px; margin-top: 4px;">
+          <span id="drawerRole" class="badge badge-role-owner">Chủ sở hữu</span>
+          <span id="drawerDept" class="badge badge-dept">Kỹ thuật phần mềm</span>
+        </div>
+      </div>
+
+      <!-- 2 nút hành động chính theo SPEC 7.8: [Nhắn tin] [Mời họp] -->
+      <div class="drawer-action-buttons">
+        <button class="btn btn-secondary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Nhắn tin
+        </button>
+        <button class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Mời họp
+        </button>
+      </div>
+
+      <!-- Khối thông tin liên hệ (SPEC 7.8 & FR-TEAM-02, đã bỏ dòng Múi giờ) -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Thông tin liên hệ</div>
+        <div class="contact-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span id="drawerEmail">minhanh@workspace.vn</span>
+        </div>
+        <div class="contact-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span id="drawerStatusText">Trạng thái: Trực tuyến</span>
+        </div>
+      </div>
+
+      <!-- Khối Lịch rảnh/bận (SPEC 7.8 & FR-TEAM-02) -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Lịch rảnh / bận hôm nay</div>
+        <div class="schedule-bar">
+          <div class="schedule-slot slot-busy">
+            <span>09:00 - 10:30</span>
+            <span>Họp ban điều hành (Bận)</span>
+          </div>
+          <div class="schedule-slot slot-free">
+            <span>10:30 - 14:00</span>
+            <span>Thời gian rảnh</span>
+          </div>
+          <div class="schedule-slot slot-busy">
+            <span>14:00 - 15:30</span>
+            <span>Đánh giá kiến trúc Q1 (Bận)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khối Tài liệu chung (SPEC 7.8 & FR-TEAM-02) -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Tài liệu chung gần đây</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <a href="#" class="shared-doc-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: 500;">Kế hoạch Phát triển Hệ thống 2026</span>
+              <span style="font-size: 10px; color: var(--muted);">Đã chỉnh sửa 2 giờ trước</span>
+            </div>
+          </a>
+          <a href="#" class="shared-doc-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: 500;">Quy chuẩn Kiến trúc Vi dịch vụ Fastify</span>
+              <span style="font-size: 10px; color: var(--muted);">Đã chỉnh sửa hôm qua</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Logic chuyển tab & trạng thái trong wireframe duyệt
+    function switchState(stateName) {
+      document.querySelectorAll('.state-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.querySelectorAll('.state-view').forEach(view => view.classList.remove('active'));
+      const target = document.getElementById('state-' + stateName);
+      if (target) target.classList.add('active');
+
+      // Tự ẩn ngăn hồ sơ nếu ở các trạng thái lỗi hoặc rỗng
+      const drawer = document.getElementById('profileDrawer');
+      if (stateName === 'empty' || stateName === 'error' || stateName === 'forbidden') {
+        drawer.style.display = 'none';
+      } else {
+        drawer.style.display = 'flex';
+      }
+    }
+
+    function switchTab(el, tabId) {
+      document.querySelectorAll('.nav-tab-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+
+      // Ẩn tất cả tab content
+      document.getElementById('tab-members-content').style.display = 'none';
+      document.getElementById('tab-teams-content').style.display = 'none';
+      document.getElementById('tab-org-content').style.display = 'none';
+      document.getElementById('tab-invites-content').style.display = 'none';
+
+      // Ẩn ngăn hồ sơ khi không ở tab Thành viên
+      const drawer = document.getElementById('profileDrawer');
+      if (tabId === 'tab-members') {
+        document.getElementById('tab-members-content').style.display = 'block';
+        drawer.style.display = 'flex';
+      } else {
+        document.getElementById(tabId + '-content').style.display = 'block';
+        drawer.style.display = 'none';
+      }
+    }
+
+    function toggleDrawer(show) {
+      const drawer = document.getElementById('profileDrawer');
+      drawer.style.display = show ? 'flex' : 'none';
+    }
+
+    function selectMember(name, email, title, dept, role, roleClass, statusText, statusDotClass, avatarBg, initials) {
+      document.querySelectorAll('tbody tr').forEach(tr => tr.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+
+      document.getElementById('drawerName').innerText = name;
+      document.getElementById('drawerEmail').innerText = email;
+      document.getElementById('drawerTitle').innerText = title;
+      document.getElementById('drawerDept').innerText = dept;
+
+      const roleBadge = document.getElementById('drawerRole');
+      roleBadge.innerText = role;
+      roleBadge.className = 'badge ' + roleClass;
+
+      const avatar = document.getElementById('drawerAvatar');
+      avatar.innerText = initials;
+      avatar.style.background = avatarBg;
+
+      const dot = document.getElementById('drawerStatusDot');
+      dot.className = 'status-dot ' + statusDotClass;
+
+      document.getElementById('drawerStatusText').innerText = 'Trạng thái: ' + statusText;
+      toggleDrawer(true);
+    }
+  </script>
+</body>
+</html>

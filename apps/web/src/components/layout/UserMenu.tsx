@@ -1,9 +1,11 @@
-import { ChevronDown, Moon, Sun } from "lucide-react";
+import { ChevronDown, Moon, Sun, Settings, Shield } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { currentUserFixture } from "../../data/fixtures";
 import { useUI } from "../../context/UIContext";
 
 export function UserMenu() {
+  const navigate = useNavigate();
   const { theme, toggleTheme, notify } = useUI();
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -46,10 +48,23 @@ export function UserMenu() {
             style={{ width: "100%", justifyContent: "flex-start" }}
             onClick={() => {
               setShowDropdown(false);
-              notify("Cài đặt tài khoản");
+              navigate("/settings");
             }}
           >
+            <Settings size={16} />
             <span>Cài đặt cá nhân</span>
+          </button>
+          <button
+            type="button"
+            className="nav-item"
+            style={{ width: "100%", justifyContent: "flex-start" }}
+            onClick={() => {
+              setShowDropdown(false);
+              navigate("/admin");
+            }}
+          >
+            <Shield size={16} />
+            <span>Quản trị hệ thống</span>
           </button>
         </div>
       )}

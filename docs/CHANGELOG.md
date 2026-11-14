@@ -2,6 +2,43 @@
 
 Toàn bộ các mốc phát triển và thay đổi mã nguồn được ghi nhận tại đây theo từng giai đoạn.
 
+## [Cấu hình Triển khai GitHub Pages & CI/CD] - 14/11/2026
+
+### Đã hoàn thành (Added & Changed)
+
+- **Cấu hình Base URL động (`apps/web/vite.config.ts`):**
+  - Tự động gán `base: "/quanlycongviec/"` khi môi trường CI/GitHub Pages được kích hoạt (`process.env.GITHUB_ACTIONS`). Giữ nguyên `base: "/"` khi chạy dev cục bộ để đảm bảo 0 ảnh hưởng đến môi trường kiểm thử chuẩn.
+- **Tích hợp React Router Basename (`apps/web/src/router.tsx`):**
+  - Lấy `basename` động từ `import.meta.env.BASE_URL`, đồng bộ hoàn hảo giữa route nội bộ và tiền tố đường dẫn repo trên GitHub Pages.
+- **Favicon & Assets (`apps/web/index.html`):**
+  - Cập nhật tham chiếu favicon với `%BASE_URL%favicon.png`.
+- **Thanh thông báo Demo (`apps/web/src/components/layout/Sidebar.tsx`):**
+  - Thêm thẻ thông báo "Bản demo · Dữ liệu mẫu" hiển thị có điều kiện khi `BASE_URL !== "/"`, hoàn toàn vô hình ở môi trường chuẩn để duy trì 0 pixel lệch.
+- **Workflow CI/CD Tự động (`.github/workflows/pages.yml`):**
+  - Tạo GitHub Actions workflow với Node 22, pnpm 12.18.0.
+  - Các bước tự động: `pnpm install --frozen-lockfile` -> `pnpm lint` -> `pnpm -r typecheck` -> `pnpm test` -> `pnpm --filter @workspace/web build`.
+  - Sao chép `dist/index.html` thành `dist/404.html` để hỗ trợ SPA Routing trực tiếp và tải lại trang (F5) trên GitHub Pages.
+  - Upload artifact và cấu hình deploy với `actions/deploy-pages@v4`.
+- **Kiểm thử Cục bộ Toàn diện:**
+  - Build thử nghiệm với `GITHUB_ACTIONS="true"` thành công 100%.
+  - Kiểm thử Vite Preview với Playwright: 6/6 kịch bản (Tổng quan, Đăng nhập, Soạn thảo, Đội ngũ, Cài đặt cá nhân, 404) ĐẠT 100%, 0 lỗi console, phản hồi 200 OK sau khi F5.
+  - Kiểm thử Visual Regression Test so với baseline: Đạt 0 pixel lệch (Exact match) trên cả 3 kích thước 1440px, 1024px, 390px.
+
+## [Điều hướng & Khung Route Hệ thống] - 14/11/2026
+
+### Đã hoàn thành (Added & Changed)
+
+- **Độ phủ Route toàn diện (UI-PLAN & SPEC Mục 7):**
+  - Khai báo đầy đủ 100% các route chính và route con trong `apps/web/src/router.tsx` theo chuẩn `docs/UI-PLAN.md` (bao gồm `/docs/:id`, `/slides/:id`, `/slides/:id/present`, `/tasks`, `/settings/*`, `/admin/*`, `/notifications`...).
+  - Tạo component khung trang chuẩn `FeaturePlaceholderPage`: hiển thị đúng tiêu đề, tên phân hệ, tính năng dự kiến và danh sách mã `FR-xxx`, trạng thái "Đang phát triển", không chứa từ ngữ nội bộ.
+  - Xây dựng trang `NotFoundPage` (404) toàn cục với nút bấm điều hướng "Về Tổng quan".
+  - Bổ sung cơ chế xử lý 404 cho Không gian làm việc (`WorkspaceDetailPage` và `WorkspaceSettingsPage`): khi `slug` không tồn tại, hiển thị trang 404 thân thiện, không gây crash ứng dụng.
+  - Cập nhật tương tác điều hướng: click thẻ dung lượng chân Sidebar mở `/storage`, click "Cài đặt cá nhân" và "Quản trị hệ thống" trong `UserMenu` chuyển hướng chính xác đến `/settings` và `/admin`.
+- **Kiểm thử & Đảm bảo Chất lượng:**
+  - Chạy Playwright E2E tự động: 100% mục menu và route click mở được, URL và tiêu đề khớp chính xác, hỗ trợ tải lại trang F5 và gõ URL trực tiếp (SPA fallback).
+  - Kiểm thử hồi quy trực quan (Visual Regression Test): Chụp ảnh và so sánh với baseline tại 1440px, 1024px, 390px đạt **0 pixel lệch** (Exact match).
+  - Toàn bộ `pnpm -r typecheck`, `pnpm lint` (0 lỗi), `pnpm test` (38/38 tests pass).
+
 ## [Giai đoạn 1] - 14/11/2026 (Đang chờ nghiệm thu)
 
 ### Đã hoàn thành (Added & Changed)

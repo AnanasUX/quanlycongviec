@@ -1,10 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { ChevronRight, Cloud, Grid2X2, Plus, X } from "lucide-react";
 import { mainNavigation, workspaceNavigation } from "../../data/mock";
 import { storageUsageFixture } from "../../data/fixtures";
 import { useUI } from "../../context/UIContext";
 
 export function Sidebar({ activeLabel }: { activeLabel?: string }) {
+  const navigate = useNavigate();
   const { showMobileNav, setShowMobileNav, setShowWorkspaceModal, notify } = useUI();
 
   return (
@@ -73,7 +74,10 @@ export function Sidebar({ activeLabel }: { activeLabel?: string }) {
 
       <div
         className="storage-card"
-        onClick={() => notify("Đang mở trang Kho lưu trữ > Dung lượng")}
+        onClick={() => {
+          setShowMobileNav(false);
+          navigate("/storage");
+        }}
         style={{ cursor: "pointer" }}
       >
         <div className="storage-row">
@@ -88,6 +92,19 @@ export function Sidebar({ activeLabel }: { activeLabel?: string }) {
           <span />
         </div>
       </div>
+
+      {import.meta.env.BASE_URL !== "/" && (
+        <div
+          style={{
+            marginTop: "8px",
+            textAlign: "center",
+            fontSize: "10px",
+            color: "var(--muted, #64748b)",
+          }}
+        >
+          Bản demo · Dữ liệu mẫu
+        </div>
+      )}
     </aside>
   );
 }
